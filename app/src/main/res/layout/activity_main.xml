@@ -12,10 +12,12 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <ExpandableListView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/exList"
+        android:text="New Text"
+        android:id="@+id/output"
+        android:layout_marginTop="94dp"
         android:layout_below="@+id/textField"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
