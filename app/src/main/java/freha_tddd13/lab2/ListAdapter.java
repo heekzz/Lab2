@@ -1,67 +1,97 @@
 package freha_tddd13.lab2;
 
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-/**
- * Created by Fredrik on 14-11-24.
- */
-public class ListAdapter implements ExpandableListAdapter{
 
-    ArrayList<Lightness> data = new ArrayList<Lightness>();
-    ArrayList<DataSetObserver> observers = new ArrayList<DataSetObserver>();
-    Context context;
+public class ListAdapter extends BaseExpandableListAdapter {
 
-    public ListAdapter(ArrayList<Lightness> data, Context c) {
-        this.data = data;
+
+    private Context context;
+    private List<String> headerList; // header titles
+    // child data in format of header title, child title
+    private HashMap<String, List<String>> childList;
+
+    public ListAdapter(Context c, List<String> header,
+                                 HashMap<String, List<String>> children) {
         this.context = c;
+        this.headerList = header;
+        this.childList = children;
     }
 
     @Override
-    public void registerDataSetObserver(DataSetObserver dataSetObserver) {
-        this.observers.add(dataSetObserver);
+    public Object getChild(int groupPosition, int childPosititon) {
+        return this.childList.get(this.headerList.get(groupPosition))
+                .get(childPosititon);
     }
 
     @Override
-    public void unregisterDataSetObserver(DataSetObserver dataSetObserver) {
-        this.observers.remove(dataSetObserver);
+    public long getChildId(int groupPosition, int childPosition) {
+        return childPosition;
+    }
+
+    @Override
+    public View getChildView(int groupPosition, final int childPosition,
+                             boolean isLastChild, View convertView, ViewGroup parent) {
+
+        final String childText = (String) getChild(groupPosition, childPosition);
+
+        if (convertView == null) {
+            LayoutInflater infalInflater = (LayoutInflater) this.context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = infalInflater.inflate(R.layout.list_item, null);
+        }
+
+        TextView txtListChild = (TextView) convertView
+                .findViewById(R.id.listItem);
+
+        txtListChild.setText(childText);
+        return convertView;
+    }
+
+    @Override
+    public int getChildrenCount(int groupPosition) {
+        return this.childList.get(this.headerList.get(groupPosition))
+                .size();
+    }
+
+    @Override
+    public Object getGroup(int groupPosition) {
+        return this.headerList.get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return data.size();
+        return this.headerList.size();
     }
 
     @Override
-    public int getChildrenCount(int i) {
-        return 0;
+    public long getGroupId(int groupPosition) {
+        return groupPosition;
     }
 
     @Override
-    public Object getGroup(int i) {
-        return data.get(i);
-    }
+    public View getGroupView(int groupPosition, boolean isExpanded,
+                             View convertView, ViewGroup parent) {
+        String headerTitle = (String) getGroup(groupPosition);
+        if (convertView == null) {
+            LayoutInflater infalInflater = (LayoutInflater) this.context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = infalInflater.inflate(R.layout.list_group, null);
+        }
 
-    @Override
-    public Object getChild(int i, int i2) {
-        return data.get(i).getColorList().get(i2);
-    }
+        TextView lblListHeader = (TextView) convertView
+                .findViewById(R.id.listHeader);
+        lblListHeader.setText(headerTitle);
 
-    @Override
-    public long getGroupId(int i) {
-        return 0;
-    }
-
-    @Override
-    public long getChildId(int i, int i2) {
-        return 0;
+        return convertView;
     }
 
     @Override
@@ -70,57 +100,24 @@ public class ListAdapter implements ExpandableListAdapter{
     }
 
     @Override
-    public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        Lightness lightness = (Lightness) getGroup(i);
-        String title = lightness.getName();
-        if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.group_view, null);
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
+        return true;
+    }
+
+    public int getGroupPosition(String group) {
+        for(int i = 0; i < headerList.size(); i++) {
+            if(headerList.get(i).equals(group))
+                return i;
         }
-
-        TextView header =
-
-
-        return view;
-    }
-
-    @Override
-    public View getChildView(int i, int i2, boolean b, View view, ViewGroup viewGroup) {
-        return null;
-    }
-
-    @Override
-    public boolean isChildSelectable(int i, int i2) {
-        return false;
-    }
-
-    @Override
-    public boolean areAllItemsEnabled() {
-        return false;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public void onGroupExpanded(int i) {
-
-    }
-
-    @Override
-    public void onGroupCollapsed(int i) {
-
-    }
-
-    @Override
-    public long getCombinedChildId(long l, long l2) {
         return 0;
     }
 
-    @Override
-    public long getCombinedGroupId(long l) {
+    public int getChildPosition(String group, String child) {
+        int count = childList.get(group).size();
+        for(int i = 0; i < count; i++) {
+            if(child.equals(getChild(getGroupPosition(group), i)))
+                return i;
+        }
         return 0;
     }
 }

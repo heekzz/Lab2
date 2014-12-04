@@ -10,7 +10,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/textField"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:inputType="text" />
 
     <ExpandableListView
         android:layout_width="wrap_content"
