@@ -107,20 +107,29 @@ public class MainActivity extends Activity {
             child = splitPhrase[2];
         }
         int groupID = listAdapter.getGroupPosition(group);
-            searchField.setBackgroundColor(Color.WHITE);
+
+        searchField.setBackgroundColor(Color.WHITE);
+
+        // If the substring in the searchfield matches something in the eXListView, set color to white, else red
         if(!matchSubstring(group, child)) {
             searchField.setBackgroundColor(Color.RED);
         }
 
+        // If we match something from our list we expand it
         if (listHeader.contains(group) && !exListView.isGroupExpanded(listAdapter.getGroupPosition(group))) {
             exListView.expandGroup(groupID);
-            if (listChild.containsValue(child)) {
+            if (listChild.containsValue(child))
                 listAdapter.getChild(groupID, listAdapter.getChildPosition(group, child));
-            }
+
         }
+
+        if(group != null && child != null)
+            exListView.setItemChecked(listAdapter.getChildPosition(group, child), true);
 
     }
 
+
+    // Checks if the typed string in searchField matches a possible result
     private boolean matchSubstring(String group, String child) {
         boolean G = false, C = false;
 
@@ -140,7 +149,7 @@ public class MainActivity extends Activity {
                 }
             }
             else
-                return G;
+                return G; // if there only is a group typed we only look for groups
         }
 
         return C && G;
