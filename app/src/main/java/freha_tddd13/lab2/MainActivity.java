@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.view.Menu;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,10 +74,11 @@ public class MainActivity extends Activity {
             if(!searchField.getText().toString().equals(tmpText))
                 searchField.setText(tmpText);
             searchField.setSelection(searchField.getText().length());
-            String g = (String) listAdapter.getGroup(group);
-            String c = (String) listAdapter.getChild(group, child);
 
-            expandableListView.setItemChecked(listAdapter.getChildPosition(g, c), true);
+
+
+           int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(group,child));
+           exListView.setItemChecked(index, true);
 
             return false;
         }
@@ -105,6 +107,7 @@ public class MainActivity extends Activity {
         String phrase = charSequence.toString();
         String[] splitPhrase = phrase.split("/");
         String group = null, child = null;
+        
         if (splitPhrase.length > 1) {
             group = splitPhrase[1];
         }
@@ -125,7 +128,10 @@ public class MainActivity extends Activity {
             exListView.expandGroup(groupID);
             if (listChild.containsValue(child)) {
                 listAdapter.getChild(groupID, listAdapter.getChildPosition(group, child));
-//                exListView.setItemChecked(listAdapter.getChildPosition(group, child), true);
+                int c = listAdapter.getChildPosition(group, child);
+                int g = listAdapter.getGroupPosition(group);
+                int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(g,c));
+                exListView.setItemChecked(index, true);
             }
 
         }
