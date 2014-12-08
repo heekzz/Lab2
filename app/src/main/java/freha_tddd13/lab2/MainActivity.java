@@ -73,7 +73,10 @@ public class MainActivity extends Activity {
             if(!searchField.getText().toString().equals(tmpText))
                 searchField.setText(tmpText);
             searchField.setSelection(searchField.getText().length());
+            String g = (String) listAdapter.getGroup(group);
+            String c = (String) listAdapter.getChild(group, child);
 
+            expandableListView.setItemChecked(listAdapter.getChildPosition(g, c), true);
 
             return false;
         }
@@ -126,9 +129,6 @@ public class MainActivity extends Activity {
             }
 
         }
-
-        if(group != null && child != null)
-            exListView.setItemChecked(listAdapter.getChildPosition(group, child), true);
 
     }
 
