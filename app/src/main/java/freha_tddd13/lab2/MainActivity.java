@@ -73,6 +73,8 @@ public class MainActivity extends Activity {
             if(!searchField.getText().toString().equals(tmpText))
                 searchField.setText(tmpText);
             searchField.setSelection(searchField.getText().length());
+
+
             return false;
         }
     };
@@ -118,8 +120,10 @@ public class MainActivity extends Activity {
         // If we match something from our list we expand it
         if (listHeader.contains(group) && !exListView.isGroupExpanded(listAdapter.getGroupPosition(group))) {
             exListView.expandGroup(groupID);
-            if (listChild.containsValue(child))
+            if (listChild.containsValue(child)) {
                 listAdapter.getChild(groupID, listAdapter.getChildPosition(group, child));
+//                exListView.setItemChecked(listAdapter.getChildPosition(group, child), true);
+            }
 
         }
 
