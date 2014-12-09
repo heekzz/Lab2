@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.view.Menu;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,11 +74,9 @@ public class MainActivity extends Activity {
             if(!searchField.getText().toString().equals(tmpText))
                 searchField.setText(tmpText);
             searchField.setSelection(searchField.getText().length());
-            String g = (String) listAdapter.getGroup(group);
-            String c = (String) listAdapter.getChild(group, child);
 
-            expandableListView.setItemChecked(listAdapter.getChildPosition(g, c), true);
-
+            int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(group,child));
+            exListView.setItemChecked(index, true);
             return false;
         }
     };
@@ -105,31 +104,31 @@ public class MainActivity extends Activity {
         String phrase = charSequence.toString();
         String[] splitPhrase = phrase.split("/");
         String group = null, child = null;
+        int groupID = 0, childID = 0;
+
         if (splitPhrase.length > 1) {
             group = splitPhrase[1];
+            groupID = listAdapter.getGroupPosition(group);
         }
         if (splitPhrase.length > 2) {
             child = splitPhrase[2];
+            childID = listAdapter.getChildPosition(group, child);
         }
-        int groupID = listAdapter.getGroupPosition(group);
 
         searchField.setBackgroundColor(Color.WHITE);
-
         // If the substring in the searchfield matches something in the eXListView, set color to white, else red
         if(!matchSubstring(group, child)) {
             searchField.setBackgroundColor(Color.RED);
         }
-
         // If we match something from our list we expand it
         if (listHeader.contains(group) && !exListView.isGroupExpanded(listAdapter.getGroupPosition(group))) {
             exListView.expandGroup(groupID);
-            if (listChild.containsValue(child)) {
-                listAdapter.getChild(groupID, listAdapter.getChildPosition(group, child));
-//                exListView.setItemChecked(listAdapter.getChildPosition(group, child), true);
-            }
-
         }
-
+        if(child != null && group != null && listChild.get(group).contains(child)){
+            Toast.makeText(getApplicationContext(),"hej",Toast.LENGTH_SHORT).show();
+            int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupID,childID));
+                exListView.setItemChecked(index,true);
+            }
     }
 
 

@@ -55,8 +55,9 @@ public class ListAdapter extends BaseExpandableListAdapter {
 
         txtListChild.setText(childText);
 
-        if(txtListChild.isSelected())
-           txtListChild.setBackgroundColor(Color.GREEN);
+        if(txtListChild.isSelected()) {
+            txtListChild.setBackgroundColor(Color.GREEN);
+        }
         return convertView;
     }
 
