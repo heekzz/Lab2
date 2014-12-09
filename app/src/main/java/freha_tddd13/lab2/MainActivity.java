@@ -105,6 +105,7 @@ public class MainActivity extends Activity {
         String[] splitPhrase = phrase.split("/");
         String group = null, child = null;
         int groupID = 0, childID = 0;
+        //eje
 
         if (splitPhrase.length > 1) {
             group = splitPhrase[1];
