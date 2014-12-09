@@ -7,13 +7,13 @@ android {
     defaultConfig {
         applicationId "freha_tddd13.lab2"
         minSdkVersion 19
-        targetSdkVersion 21
         versionCode 1
+        targetSdkVersion 21
         versionName "1.0"
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
