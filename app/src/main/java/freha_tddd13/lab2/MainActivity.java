@@ -160,6 +160,7 @@ public class MainActivity extends Activity {
     }
 
     // Fills the table with data
+     // very nice
     private void addSomeData () {
         listHeader = new ArrayList<String>();
         listChild = new HashMap<Integer, List<String>>();
