@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -22,9 +23,7 @@ public class MainActivity extends Activity {
     private ExpandableListView exListView;
     private EditText searchField;
     private List<String> listHeader;
-    private HashMap<String, List<String>> listChild;
-
-
+    private HashMap<Integer, List<String>> listChild;
 
 
     @Override
@@ -69,19 +68,19 @@ public class MainActivity extends Activity {
 
     private ExpandableListView.OnChildClickListener childClickListener = new ExpandableListView.OnChildClickListener() {
         @Override
-        public boolean onChildClick(ExpandableListView expandableListView, View view, int group, int child, long l) {
-            String tmpText = "/" + listHeader.get(group) + "/" + listChild.get(listHeader.get(group)).get(child);
+        public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long l) {
+            String tmpText = "/" + listHeader.get(groupPosition) + "/" + listChild.get(groupPosition).get(childPosition);
             if(!searchField.getText().toString().equals(tmpText))
                 searchField.setText(tmpText);
             searchField.setSelection(searchField.getText().length());
 
-            int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(group,child));
+            int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupPosition,childPosition));
             exListView.setItemChecked(index, true);
             return false;
         }
     };
 
-     // Listening to any changes in the textfield
+    // Listening to any changes in the textfield
     private TextWatcher watcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -105,8 +104,9 @@ public class MainActivity extends Activity {
         String[] splitPhrase = phrase.split("/");
         String group = null, child = null;
         int groupID = 0, childID = 0;
-        //eje
+        searchField.setBackgroundColor(Color.WHITE);
 
+        // Devide the searchphrase in two strings to separate group and children matches in the list
         if (splitPhrase.length > 1) {
             group = splitPhrase[1];
             groupID = listAdapter.getGroupPosition(group);
@@ -116,7 +116,6 @@ public class MainActivity extends Activity {
             childID = listAdapter.getChildPosition(group, child);
         }
 
-        searchField.setBackgroundColor(Color.WHITE);
         // If the substring in the searchfield matches something in the eXListView, set color to white, else red
         if(!matchSubstring(group, child)) {
             searchField.setBackgroundColor(Color.RED);
@@ -125,11 +124,12 @@ public class MainActivity extends Activity {
         if (listHeader.contains(group) && !exListView.isGroupExpanded(listAdapter.getGroupPosition(group))) {
             exListView.expandGroup(groupID);
         }
-        if(child != null && group != null && listChild.get(group).contains(child)){
-            Toast.makeText(getApplicationContext(),"hej",Toast.LENGTH_SHORT).show();
-            int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupID,childID));
-                exListView.setItemChecked(index,true);
-            }
+
+        // If we match a childen we highlight it.
+        if(child != null && group != null && listChild.get(groupID).contains(child)){
+            final int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupID,childID));
+            exListView.setItemChecked(index, true);
+        }
     }
 
 
@@ -139,12 +139,12 @@ public class MainActivity extends Activity {
 
         if(group != null) {
             // Looking for match in group titles
-            for (String word : listChild.keySet()) {
+            for (String word : listHeader) {
                 if (word.startsWith(group))
                     G = true;
             }
 
-            List<String> tmp = listChild.get(group);
+            List<String> tmp = listChild.get(listAdapter.getGroupPosition(group));
 
             if(child != null) {
                 for (String word : tmp) {
@@ -160,20 +160,24 @@ public class MainActivity extends Activity {
     }
 
     // Fills the table with data
-     // very nice
+    // very nice
     private void addSomeData () {
         listHeader = new ArrayList<String>();
-        listChild = new HashMap<String, List<String>>();
-        listHeader.add("light");
+        listChild = new HashMap<Integer, List<String>>();
 
+        listHeader.add("light");
+        listHeader.add("light");
         listHeader.add("medium");
         listHeader.add("dark");
 
         List<String> light = new ArrayList<String>();
         light.add("blue");
         light.add("red");
-        light.add("yellow");
-        light.add("green");
+
+        List<String> light2 = new ArrayList<String>();
+        light2.add("yellow");
+        light2.add("green");
+
 
         List<String> medium = new ArrayList<String>();
         medium.add("blue");
@@ -187,9 +191,10 @@ public class MainActivity extends Activity {
         dark.add("yellow");
         dark.add("green");
 
-        listChild.put(listHeader.get(0), light);
-        listChild.put(listHeader.get(1), medium);
-        listChild.put(listHeader.get(2), dark);
+        listChild.put(0, light);
+        listChild.put(1, light2);
+        listChild.put(2, medium);
+        listChild.put(3, dark);
 
 
     }
