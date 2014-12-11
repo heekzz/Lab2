@@ -18,19 +18,18 @@ public class ListAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<String> headerList; // header titles
     // child data in format of header title, child title
-    private HashMap<String, List<String>> childList;
+    private HashMap<Integer, List<String>> childList;
 
     public ListAdapter(Context c, List<String> header,
-                                 HashMap<String, List<String>> children) {
+                                 HashMap<Integer, List<String>> children) {
         this.context = c;
         this.headerList = header;
         this.childList = children;
     }
 
     @Override
-    public Object getChild(int groupPosition, int childPosititon) {
-        return this.childList.get(this.headerList.get(groupPosition))
-                .get(childPosititon);
+    public String getChild(int groupPosition, int childPosititon) {
+        return childList.get(groupPosition).get(childPosititon);
     }
 
     @Override
@@ -39,10 +38,10 @@ public class ListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, final int childPosition,
+    public View getChildView(int groupPosition, int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final String childText = (String) getChild(groupPosition, childPosition);
+        String childText = childList.get(groupPosition).get(childPosition);
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.context
@@ -60,13 +59,12 @@ public class ListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return this.childList.get(this.headerList.get(groupPosition))
-                .size();
+        return this.childList.get(groupPosition).size();
     }
 
     @Override
-    public Object getGroup(int groupPosition) {
-        return this.headerList.get(groupPosition);
+    public List<String> getGroup(int groupPosition) {
+        return childList.get(groupPosition);
     }
 
     @Override
@@ -82,7 +80,7 @@ public class ListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        String headerTitle = (String) getGroup(groupPosition);
+        String headerTitle = headerList.get(groupPosition);
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -115,7 +113,8 @@ public class ListAdapter extends BaseExpandableListAdapter {
     }
 
     public int getChildPosition(String group, String child) {
-        int count = childList.get(group).size();
+        int groupPosition = getGroupPosition(group);
+        int count = childList.get(groupPosition).size();
         for(int i = 0; i < count; i++) {
             if(child.equals(getChild(getGroupPosition(group), i)))
                 return i;

@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.SparseBooleanArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -70,16 +69,14 @@ public class MainActivity extends Activity {
 
     private ExpandableListView.OnChildClickListener childClickListener = new ExpandableListView.OnChildClickListener() {
         @Override
-        public boolean onChildClick(ExpandableListView expandableListView, View viewClicked, int groupPos, int childPos, long childRowId) {
-            String tmpText = "/" + listHeader.get(groupPos) + "/" + listChild.get(listHeader.get(groupPos)).get(childPos);
+        public boolean onChildClick(ExpandableListView expandableListView, View view, int group, int child, long l) {
+            String tmpText = "/" + listHeader.get(group) + "/" + listChild.get(listHeader.get(group)).get(child);
             if(!searchField.getText().toString().equals(tmpText))
                 searchField.setText(tmpText);
             searchField.setSelection(searchField.getText().length());
 
-
-//            int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(group,child));
-//            exListView.setItemChecked(index, true);
-
+            int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(group,child));
+            exListView.setItemChecked(index, true);
             return false;
         }
     };
@@ -118,27 +115,22 @@ public class MainActivity extends Activity {
             child = splitPhrase[2];
             childID = listAdapter.getChildPosition(group, child);
         }
-        searchField.setBackgroundColor(Color.WHITE);
 
+        searchField.setBackgroundColor(Color.WHITE);
         // If the substring in the searchfield matches something in the eXListView, set color to white, else red
         if(!matchSubstring(group, child)) {
             searchField.setBackgroundColor(Color.RED);
         }
-
         // If we match something from our list we expand it
         if (listHeader.contains(group) && !exListView.isGroupExpanded(listAdapter.getGroupPosition(group))) {
             exListView.expandGroup(groupID);
         }
-
-        if(child != null && group != null &&listChild.get(group).contains(child)){
+        if(child != null && group != null && listChild.get(group).contains(child)){
             Toast.makeText(getApplicationContext(),"hej",Toast.LENGTH_SHORT).show();
-            int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupID, childID));
+            int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupID,childID));
                 exListView.setItemChecked(index,true);
             }
-
-//            int index = listAdapter.getChildPosition(group,child);
-        }
-
+    }
 
 
     // Checks if the typed string in searchField matches a possible result
@@ -172,6 +164,7 @@ public class MainActivity extends Activity {
         listHeader = new ArrayList<String>();
         listChild = new HashMap<String, List<String>>();
         listHeader.add("light");
+
         listHeader.add("medium");
         listHeader.add("dark");
 
@@ -192,9 +185,6 @@ public class MainActivity extends Activity {
         dark.add("red");
         dark.add("yellow");
         dark.add("green");
-
-
-
 
         listChild.put(listHeader.get(0), light);
         listChild.put(listHeader.get(1), medium);
