@@ -10,11 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.view.Menu;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -58,10 +55,6 @@ public class MainActivity extends Activity {
                 searchField.setText(tmpText);
 
             searchField.setSelection(searchField.getText().length());
-
-//            Toast.makeText(getApplicationContext(),"hehj",Toast.LENGTH_SHORT).show();
-//            Toast.makeText(getApplicationContext(), Integer.toString(list),Toast.LENGTH_SHORT).show();
-
 
         }
     };
@@ -122,7 +115,6 @@ public class MainActivity extends Activity {
         String[] splitPhrase = phrase.split("/");
         String group = null, child = null;
         int childID = 0;
-//        int groupID = 0
         searchField.setBackgroundColor(Color.WHITE);
 
         // Devide the searchphrase in two strings to separate group and children matches in the list
