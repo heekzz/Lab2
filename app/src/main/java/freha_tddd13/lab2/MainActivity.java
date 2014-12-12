@@ -50,10 +50,12 @@ public class MainActivity extends Activity {
     private ExpandableListView.OnGroupExpandListener groupExpandListener = new ExpandableListView.OnGroupExpandListener() {
         @Override
         public void onGroupExpand(int i) {
+            //on expand, we set the name of the group header in the search field and surround the text with forward slashes.
             String tmpText = "/" + listHeader.get(i) + "/";
             if(!searchField.getText().toString().equals(tmpText))
                 searchField.setText(tmpText);
 
+            // this makes sure the text cursor is at the end
             searchField.setSelection(searchField.getText().length());
 
         }
@@ -62,6 +64,7 @@ public class MainActivity extends Activity {
     private ExpandableListView.OnGroupCollapseListener groupCollapseListener = new ExpandableListView.OnGroupCollapseListener() {
         @Override
         public void onGroupCollapse(int i) {
+            // on collapse we set the text as only a forward slash
             if(!searchField.getText().toString().equals("/"))
                 searchField.setText("/");
             searchField.setSelection(searchField.getText().length());
@@ -72,12 +75,14 @@ public class MainActivity extends Activity {
     private ExpandableListView.OnChildClickListener childClickListener = new ExpandableListView.OnChildClickListener() {
         @Override
         public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long l) {
+            // this sets the name of the group and the child in the search field
             String tmpText = "/" + listHeader.get(groupPosition) + "/" + listChild.get(groupPosition).get(childPosition);
             if(!searchField.getText().toString().equals(tmpText)) {
                 searchField.setText(tmpText);
             }
             searchField.setSelection(searchField.getText().length());
 
+            // uses flatlistposition to get the index of the child we want to highlight
             int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupPosition,childPosition));
             exListView.setItemChecked(index, true);
 
@@ -91,7 +96,7 @@ public class MainActivity extends Activity {
             return false;
         }
     };
-    // Listening to any changes in the textfield
+    // Listens to any changes in the textfield
     private TextWatcher watcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -115,16 +120,15 @@ public class MainActivity extends Activity {
         String[] splitPhrase = phrase.split("/");
         String group = null, child = null;
         int childID = 0;
-        searchField.setBackgroundColor(Color.WHITE);
+        ArrayList<Integer> groupIDs = new ArrayList<>();
 
-        // Devide the searchphrase in two strings to separate group and children matches in the list
-        ArrayList<Integer> groupIDs = new ArrayList<Integer>();
+        // Divide the search phrase in two strings to separate group and children matches in the list
         if (splitPhrase.length > 1) {
             group = splitPhrase[1];
 
             // Loop through possible group duplicates, if we have more groups
             // with the same name we put them in a ArrayList to be able to loop
-            // through all the group's children
+            // through all the different group's children
             for(int i=0;i<listHeader.size();i++){
                 if(group.equalsIgnoreCase(listHeader.get(i))){
                     groupIDs.add(i);
@@ -132,6 +136,8 @@ public class MainActivity extends Activity {
             }
         }
 
+        // Use a if-function to avoid ArrayIndexOutOfBounds Exception if
+        // we dont have a child typed in the searchfield
         if (splitPhrase.length > 2) {
             child = splitPhrase[2];
             for (int i = 0; i < groupIDs.size(); i++) {
@@ -146,20 +152,21 @@ public class MainActivity extends Activity {
         if(!matchSubstring(group, child, groupIDs)) {
             if(!charSequence.toString().equalsIgnoreCase("/"))
                 searchField.setBackgroundColor(Color.RED);
-            exListView.clearChoices();
+            exListView.clearChoices(); // Clear previous marked item in the ExpListView
             listAdapter.notifyDataSetChanged();
+        } else {
+            searchField.setBackgroundColor(Color.WHITE);
         }
 
-
         // If we match a children we highlight it.
+        // Loop through possible multiple group matches to see where the child is located
         for(int i = 0; i < groupIDs.size(); i++){
             if(child != null && group != null && listChild.get(groupIDs.get(i)).contains(child)) {
                 int index = exListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupIDs.get(i), childID));
-                exListView.setItemChecked(index, true);
-
+                exListView.setItemChecked(index, true); // Highlight the child
             }
             if (!exListView.isGroupExpanded(groupIDs.get(i))) {
-                exListView.expandGroup(groupIDs.get(i));
+                exListView.expandGroup(groupIDs.get(i)); // Expand the group where the child is located
             }
         }
     }
@@ -177,8 +184,8 @@ public class MainActivity extends Activity {
             }
 
             if(child != null) {
-
-
+                // Loop through possible multiple group matches and looking for
+                // a child in the different groups which matches the substring
                 for(int i = 0; i < groupIDs.size(); i++){
                     List<String> tmp = listChild.get(groupIDs.get(i));
                     for(int j = 0; j < tmp.size() ; j++) {
@@ -186,59 +193,51 @@ public class MainActivity extends Activity {
                             C = true;
                     }
                 }
-            }
-
-            else
+            }else
                 return G; // if there only is a group typed we only look for groups
         }
 
+        // return true if we match both a group and a child
         return C && G;
     }
 
     // Fills the table with data
     // very nice
     private void addSomeData () {
-        listHeader = new ArrayList<String>();
-        listChild = new HashMap<Integer, List<String>>();
+        listHeader = new ArrayList<>();
+        listChild = new HashMap<>();
 
-        listHeader.add("dennis");
-        listHeader.add("dennis");
-        listHeader.add("fredrik");
-        listHeader.add("anton");
-        listHeader.add("alex");
+        listHeader.add("europe");
+        listHeader.add("europe");
+        listHeader.add("asia");
+        listHeader.add("africa");
 
-        List<String> deno = new ArrayList<String>();
-        deno.add("king");
-        deno.add("boss");
+        List<String> europe = new ArrayList<>();
+        europe.add("germany");
+        europe.add("italy");
+        europe.add("greece");
 
-        List<String> deno2 = new ArrayList<String>();
-        deno2.add("nice");
-        deno2.add("guy");
-        deno2.add("nice");
-
-
-        List<String> fredrik = new ArrayList<String>();
-        fredrik.add("boo");
-        fredrik.add("loser");
-        fredrik.add("mamasboy");
-
-        List<String> anton = new ArrayList<String>();
-        anton.add("lol");
-        anton.add("thisguy");
-        anton.add("idonteven");
-        anton.add("gohome");
-
-        List<String> alex = new ArrayList<String>();
-        alex.add("tryhard");
-        alex.add("weebaby");
-        alex.add("diaperboy");
-
-        listChild.put(0, deno);
-        listChild.put(1, deno2);
-        listChild.put(2, fredrik);
-        listChild.put(3, anton);
+        List<String> europe2 = new ArrayList<>();
+        europe2.add("sweden");
+        europe2.add("norway");
+        europe2.add("denmark");
 
 
+        List<String> asia = new ArrayList<>();
+        asia.add("china");
+        asia.add("india");
+        asia.add("japan");
+
+        List<String> africa = new ArrayList<>();
+        africa.add("kenya");
+        africa.add("kamerun");
+        africa.add("lybia");
+        africa.add("gambia");
+
+        listChild.put(0, europe);
+        listChild.put(1, europe2);
+        listChild.put(2, asia);
+        listChild.put(3, africa);
     }
 
 

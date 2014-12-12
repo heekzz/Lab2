@@ -104,18 +104,10 @@ public class ListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public int getGroupPosition(String group) {
-        for(int i = 0; i < headerList.size(); i++) {
-            if(headerList.get(i).equals(group))
-                return i;
-        }
-        return 0;
-    }
-
-    public int getChildPosition(int groupID, String child) {
-        int count = childList.get(groupID).size();
+    public int getChildPosition(int group, String child) {
+        int count = childList.get(group).size();
         for(int i = 0; i < count; i++) {
-            if(child.equals(getChild(groupID, i)))
+            if(child.equals(getChild(group, i)))
                 return i;
         }
         return 0;
