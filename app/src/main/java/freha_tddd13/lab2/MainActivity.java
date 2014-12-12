@@ -158,9 +158,9 @@ public class MainActivity extends Activity {
                 exListView.setItemChecked(index, true);
 
             }
-                if (!exListView.isGroupExpanded(groupIDs.get(i))) {
-                    exListView.expandGroup(groupIDs.get(i));
-                }
+            if (!exListView.isGroupExpanded(groupIDs.get(i))) {
+                exListView.expandGroup(groupIDs.get(i));
+            }
         }
     }
 
@@ -179,9 +179,9 @@ public class MainActivity extends Activity {
             if(child != null) {
 
 
-                for(int i=0;i<groupIDs.size(); i++){
+                for(int i = 0; i < groupIDs.size(); i++){
                     List<String> tmp = listChild.get(groupIDs.get(i));
-                    for(int j=0;j < tmp.size() ;j++) {
+                    for(int j = 0; j < tmp.size() ; j++) {
                         if (tmp.get(j).startsWith(child))
                             C = true;
                     }
@@ -205,33 +205,38 @@ public class MainActivity extends Activity {
         listHeader.add("dennis");
         listHeader.add("fredrik");
         listHeader.add("anton");
+        listHeader.add("alex");
 
-        List<String> light = new ArrayList<String>();
-        light.add("king");
-        light.add("boss");
+        List<String> deno = new ArrayList<String>();
+        deno.add("king");
+        deno.add("boss");
 
-        List<String> light2 = new ArrayList<String>();
-        light2.add("nice");
-        light2.add("guy");
-        light2.add("nice");
+        List<String> deno2 = new ArrayList<String>();
+        deno2.add("nice");
+        deno2.add("guy");
+        deno2.add("nice");
 
 
-        List<String> medium = new ArrayList<String>();
-        medium.add("boo");
-        medium.add("loser");
-        medium.add("tryhard");
-        medium.add("mamasboy");
+        List<String> fredrik = new ArrayList<String>();
+        fredrik.add("boo");
+        fredrik.add("loser");
+        fredrik.add("mamasboy");
 
-        List<String> dark = new ArrayList<String>();
-        dark.add("lol");
-        dark.add("thisguy");
-        dark.add("idonteven");
-        dark.add("gohome");
+        List<String> anton = new ArrayList<String>();
+        anton.add("lol");
+        anton.add("thisguy");
+        anton.add("idonteven");
+        anton.add("gohome");
 
-        listChild.put(0, light);
-        listChild.put(1, light2);
-        listChild.put(2, medium);
-        listChild.put(3, dark);
+        List<String> alex = new ArrayList<String>();
+        alex.add("tryhard");
+        alex.add("weebaby");
+        alex.add("diaperboy");
+
+        listChild.put(0, deno);
+        listChild.put(1, deno2);
+        listChild.put(2, fredrik);
+        listChild.put(3, anton);
 
 
     }
